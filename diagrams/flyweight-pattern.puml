@@ -1,0 +1,69 @@
+@startuml FlyweightPattern
+title Flyweight Design Pattern - Warehouse Inventory Domain
+
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam roundcorner 10
+skinparam class {
+    BackgroundColor LightYellow
+    ArrowColor DarkSlateGray
+    BorderColor DarkSlateGray
+}
+
+package "Flyweight Pattern (Structural)" {
+
+    class ProductCatalog << (F, #FFAAAA) Flyweight Factory >> {
+        - catalogRegistry: ConcurrentMap<String, ProductCatalogItem>
+        + getOrCreateProduct(sku: String, name: String): ProductCatalogItem
+        + containsSku(sku: String): boolean
+        + getCatalogSize(): int
+        + clear(): void
+    }
+
+    class ProductCatalogItem << (F, #AAFFAA) Concrete Flyweight >> {
+        - sku: String
+        - name: String
+        - heavyImageData: byte[]
+        + ProductCatalogItem(sku: String, name: String)
+        + getSku(): String
+        + getName(): String
+        + getHeavyImageData(): byte[]
+        .. Intrinsic State ..
+        note: Immutable and shared across all\nboxes of this SKU. Heavy 5MB buffer\nis allocated exactly ONCE per SKU.
+    }
+
+    class OptimizedInventoryItem << (C, #AAAAFF) Flyweight Context >> {
+        - barcode: String
+        - location: String
+        - productCatalogItem: ProductCatalogItem
+        + OptimizedInventoryItem(barcode: String, location: String, flyweight: ProductCatalogItem)
+        + getBarcode(): String
+        + getLocation(): String
+        + getProductCatalogItem(): ProductCatalogItem
+        + getSku(): String
+        + getName(): String
+        + getHeavyImageData(): byte[]
+        .. Extrinsic State ..
+        note: Unique per physical box.\nHolds only a 64-bit reference\nto the shared 5MB Flyweight.
+    }
+
+    class OptimizedController << Client >> {
+        - receiverRegistry: ShipmentReceiverRegistry
+        - productCatalog: ProductCatalog
+        + receiveShipment(type: String, count: int): ResponseEntity
+    }
+}
+
+' Relationships
+ProductCatalog o--> "0..*" ProductCatalogItem : manages / caches singletons
+OptimizedInventoryItem --> "1" ProductCatalogItem : references shared flyweight
+OptimizedController ..> ProductCatalog : inspects size
+OptimizedController ..> OptimizedInventoryItem : receives batch
+
+note bottom of ProductCatalog
+  Thread-safe registry utilizing ConcurrentHashMap.computeIfAbsent()
+  Guarantees that 1,000 items referencing "ELEC-SONY-WH1000XM5"
+  instantiate only 1 instance of the 5MB payload in JVM heap memory.
+end note
+
+@enduml

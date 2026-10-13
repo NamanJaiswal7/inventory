@@ -1,0 +1,83 @@
+@startuml FactoryMethodPattern
+title Factory Method Design Pattern - Warehouse Inventory Domain
+
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam roundcorner 10
+skinparam class {
+    BackgroundColor LightCyan
+    ArrowColor DarkSlateGray
+    BorderColor DarkSlateGray
+}
+
+package "Factory Method Pattern (Creational)" {
+
+    abstract class ShipmentReceiver << (C, #FFAAAA) Creator >> {
+        {abstract} # createInventoryItem(barcode: String, location: String): OptimizedInventoryItem
+        {abstract} + getType(): String
+        + processShipment(count: int): List<OptimizedInventoryItem>
+        .. Template Workflow ..
+        note: Defines standardized batch receiving\nand invokes createInventoryItem() polymorphically.
+    }
+
+    class ElectronicsReceiver << (C, #AAFFAA) Concrete Creator >> {
+        - productCatalog: ProductCatalog
+        + getType(): String
+        # createInventoryItem(barcode: String, location: String): OptimizedInventoryItem
+    }
+
+    class BooksReceiver << (C, #AAFFAA) Concrete Creator >> {
+        - productCatalog: ProductCatalog
+        + getType(): String
+        # createInventoryItem(barcode: String, location: String): OptimizedInventoryItem
+    }
+
+    class ClothingReceiver << (C, #AAFFAA) Concrete Creator >> {
+        - productCatalog: ProductCatalog
+        + getType(): String
+        # createInventoryItem(barcode: String, location: String): OptimizedInventoryItem
+    }
+
+    class ShipmentReceiverRegistry << (S, #FFDDAA) Strategy / Dispatcher >> {
+        - receiverMap: Map<String, ShipmentReceiver>
+        + ShipmentReceiverRegistry(receivers: List<ShipmentReceiver>)
+        + getReceiver(type: String): ShipmentReceiver
+        + getSupportedTypes(): Set<String>
+    }
+
+    class OptimizedController << Client >> {
+        - receiverRegistry: ShipmentReceiverRegistry
+        - productCatalog: ProductCatalog
+        + receiveShipment(type: String, count: int): ResponseEntity
+    }
+
+    class OptimizedInventoryItem << Product / Context >> {
+        - barcode: String
+        - location: String
+        - productCatalogItem: ProductCatalogItem
+    }
+}
+
+' Inheritance
+ShipmentReceiver <|-- ElectronicsReceiver
+ShipmentReceiver <|-- BooksReceiver
+ShipmentReceiver <|-- ClothingReceiver
+
+' Creation Relationships
+ElectronicsReceiver ..> OptimizedInventoryItem : creates
+BooksReceiver ..> OptimizedInventoryItem : creates
+ClothingReceiver ..> OptimizedInventoryItem : creates
+
+' Registry and Client
+ShipmentReceiverRegistry o--> "1..*" ShipmentReceiver : auto-discovers via Spring DI
+OptimizedController --> ShipmentReceiverRegistry : looks up receiver by type
+OptimizedController ..> ShipmentReceiver : executes processShipment()
+
+note right of ShipmentReceiverRegistry
+  Eliminates switch/if-else statements completely!
+  Satisfies Open/Closed Principle (OCP):
+  Adding a new product receiver (e.g. ToysReceiver) requires
+  ONLY adding a new subclass annotated with @Component.
+end note
+
+@enduml

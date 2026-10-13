@@ -1,0 +1,73 @@
+@startuml SystemArchitecture
+title E-Commerce Warehouse Inventory: System Architecture & Pattern Comparison
+
+skinparam roundcorner 10
+skinparam componentStyle uml2
+
+cloud "Client / HTTP Consumers" as ClientLayer {
+    [POST /api/v1/naive/receive] as HttpNaive
+    [POST /api/v1/optimized/receive] as HttpOpt
+}
+
+node "Spring Boot Application Container" {
+
+    package "Naive Implementation (com.warehouse.naive)" #FFEAEA {
+        [NaiveController] as NaiveCtrl
+        [NaiveShipmentProcessor] as NaiveProc
+        [NaiveInventoryItem\n(Heavy 5MB Payload per Box)] as NaiveItem
+
+        HttpNaive --> NaiveCtrl : HTTP Request
+        NaiveCtrl --> NaiveProc : processShipment(type, count)
+        NaiveProc ..> NaiveItem : switch(type) -> new NaiveInventoryItem()\n[Allocates separate 5MB byte[] each time]
+        note bottom of NaiveProc
+            Violates Open/Closed Principle
+            Switch statement must be edited
+            for every new category
+        end note
+    }
+
+    package "Optimized Implementation (com.warehouse.optimized)" #EAF7EA {
+        [OptimizedController] as OptCtrl
+        [ShipmentReceiverRegistry] as Registry
+
+        package "Factory Method Subsystem" {
+            [ShipmentReceiver\n(Abstract Creator)] as ReceiverBase
+            [ElectronicsReceiver] as ElecRec
+            [BooksReceiver] as BooksRec
+            [ClothingReceiver] as ClothRec
+
+            ReceiverBase <|-- ElecRec : extends
+            ReceiverBase <|-- BooksRec : extends
+            ReceiverBase <|-- ClothRec : extends
+        }
+
+        package "Flyweight Subsystem" {
+            [ProductCatalog\n(Thread-Safe Flyweight Factory)] as Catalog
+            [ProductCatalogItem\n(5MB Shared Flyweight)] as Flyweight
+            [OptimizedInventoryItem\n(Lightweight Context ~40B)] as OptItem
+
+            Catalog o--> Flyweight : caches exactly 1 instance per SKU
+            OptItem --> Flyweight : holds 64-bit reference
+        }
+
+        HttpOpt --> OptCtrl : HTTP Request
+        OptCtrl --> Registry : getReceiver(type)
+        Registry --> ReceiverBase : resolves creator strategy
+        
+        ElecRec ..> OptItem : createInventoryItem()
+        BooksRec ..> OptItem : createInventoryItem()
+        ClothRec ..> OptItem : createInventoryItem()
+
+        ElecRec --> Catalog : getOrCreateProduct()
+        BooksRec --> Catalog : getOrCreateProduct()
+        ClothRec --> Catalog : getOrCreateProduct()
+
+        note bottom of Catalog
+            Flyweight Pattern:
+            1,000 items share exactly
+            ONE 5MB buffer in JVM heap
+        end note
+    }
+}
+
+@enduml
