@@ -262,52 +262,41 @@ This diagram contrasts the Naive Anti-Pattern (tight coupling & duplicated 5MB a
 
 #### Mermaid Architecture Flow:
 ```mermaid
-graph TD
-    subgraph ClientLayer ["Client HTTP Layer"]
-        ReqOpt["POST /api/v1/optimized/receive?type=electronics&count=1000"]
-        ReqNaive["POST /api/v1/naive/receive?type=electronics&count=1000"]
+flowchart TD
+    subgraph ClientLayer [Client HTTP Layer]
+        ReqOpt["POST /api/v1/optimized/receive"]
+        ReqNaive["POST /api/v1/naive/receive"]
     end
 
-    subgraph NaivePackage ["com.warehouse.naive (Anti-Pattern)"]
-        NaiveCtrl["NaiveController"]
-        NaiveProc["NaiveShipmentProcessor<br/>(Monolithic switch statement)"]
-        NaiveItem["1,000 x NaiveInventoryItem<br/>(1,000 separate 5MB buffers = 5 GB RAM!)"]
-        
+    subgraph NaiveFlow [Naive Anti-Pattern]
+        NaiveCtrl[NaiveController]
+        NaiveProc[NaiveShipmentProcessor]
+        NaiveItem["1000 x NaiveInventoryItem (5GB RAM)"]
+        OOM["💥 OutOfMemoryError"]
+
         ReqNaive --> NaiveCtrl
         NaiveCtrl --> NaiveProc
         NaiveProc -->|switch case| NaiveItem
-        NaiveItem -->|Exhausts 2GB Heap| OOM["💥 OutOfMemoryError"]
+        NaiveItem -->|Exhausts 2GB Heap| OOM
     end
 
-    subgraph OptimizedPackage ["com.warehouse.optimized (Flyweight + Factory Method)"]
-        OptCtrl["OptimizedController"]
-        Registry["ShipmentReceiverRegistry<br/>(Auto-wires receivers, 0 switch statements)"]
-        
-        subgraph FactoryMethod ["Factory Method Pattern (Creators)"]
-            CreatorBase["ShipmentReceiver<br/>(Template Method: processShipment)"]
-            ElecRec["ElectronicsReceiver<br/>(createInventoryItem)"]
-            BooksRec["BooksReceiver<br/>(createInventoryItem)"]
-            ClothRec["ClothingReceiver<br/>(createInventoryItem)"]
-            
-            CreatorBase <|-- ElecRec
-            CreatorBase <|-- BooksRec
-            CreatorBase <|-- ClothRec
-        end
-
-        subgraph FlyweightSubsystem ["Flyweight Pattern (Shared Memory)"]
-            FlyweightFactory["ProductCatalog<br/>(ConcurrentHashMap registry)"]
-            SharedFlyweight["ProductCatalogItem<br/>(Heavy 5MB image allocated ONCE per SKU)"]
-            OptContext["1,000 x OptimizedInventoryItem<br/>(~40 bytes each: barcode + shelf + ref)"]
-            
-            FlyweightFactory o-->|caches singleton| SharedFlyweight
-            OptContext -->|holds 64-bit reference| SharedFlyweight
-        end
+    subgraph OptimizedFlow [Optimized Solution: Flyweight + Factory Method]
+        OptCtrl[OptimizedController]
+        Registry[ShipmentReceiverRegistry]
+        ReceiverBase[ShipmentReceiver]
+        ElecRec[ElectronicsReceiver]
+        Catalog[ProductCatalog]
+        Flyweight[ProductCatalogItem - 5MB Shared Payload]
+        ContextItem["1000 x OptimizedInventoryItem (~40B each)"]
 
         ReqOpt --> OptCtrl
         OptCtrl --> Registry
-        Registry --> CreatorBase
-        ElecRec --> FlyweightFactory
-        ElecRec ..> OptContext
+        Registry -->|resolves| ReceiverBase
+        ReceiverBase -->|specialized by| ElecRec
+        ElecRec -->|gets or creates| Catalog
+        Catalog -->|stores 1 instance| Flyweight
+        ElecRec -.->|instantiates| ContextItem
+        ContextItem -->|references| Flyweight
     end
 ```
 
@@ -323,7 +312,7 @@ Separates heavy immutable intrinsic state (`ProductCatalogItem`) from lightweigh
 ```mermaid
 classDiagram
     class ProductCatalog {
-        -ConcurrentMap~String, ProductCatalogItem~ catalogRegistry
+        -ConcurrentMap catalogRegistry
         +getOrCreateProduct(sku, name) ProductCatalogItem
         +containsSku(sku) boolean
         +getCatalogSize() int
@@ -338,7 +327,6 @@ classDiagram
         +getName() String
         +getHeavyImageData() byte[]
     }
-    note for ProductCatalogItem "INTRINSIC STATE (Immutable)\n5MB buffer allocated ONCE per SKU"
 
     class OptimizedInventoryItem {
         -String barcode
@@ -350,10 +338,9 @@ classDiagram
         +getSku() String
         +getName() String
     }
-    note for OptimizedInventoryItem "EXTRINSIC STATE (~40 bytes)\nUnique barcode/shelf + 8-byte pointer"
 
-    ProductCatalog o--> "0..*" ProductCatalogItem : manages & caches
-    OptimizedInventoryItem --> "1" ProductCatalogItem : references shared flyweight
+    ProductCatalog o--> ProductCatalogItem : caches singleton
+    OptimizedInventoryItem --> ProductCatalogItem : references shared flyweight
 ```
 
 ---
@@ -369,9 +356,9 @@ Decouples shipment processing workflow from concrete item instantiation, adherin
 classDiagram
     class ShipmentReceiver {
         <<abstract>>
-        #createInventoryItem(barcode, location)* OptimizedInventoryItem
-        +getType()* String
-        +processShipment(count) List~OptimizedInventoryItem~
+        #createInventoryItem(barcode, location) OptimizedInventoryItem
+        +getType() String
+        +processShipment(count) List
     }
 
     class ElectronicsReceiver {
@@ -393,15 +380,15 @@ classDiagram
     }
 
     class ShipmentReceiverRegistry {
-        -Map~String, ShipmentReceiver~ receiverMap
+        -Map receiverMap
         +getReceiver(type) ShipmentReceiver
-        +getSupportedTypes() Set~String~
+        +getSupportedTypes() Set
     }
 
     ShipmentReceiver <|-- ElectronicsReceiver
     ShipmentReceiver <|-- BooksReceiver
     ShipmentReceiver <|-- ClothingReceiver
-    ShipmentReceiverRegistry o--> "1..*" ShipmentReceiver : dynamic discovery via Spring DI
+    ShipmentReceiverRegistry o--> ShipmentReceiver : dynamic discovery via Spring DI
 ```
 
 ---

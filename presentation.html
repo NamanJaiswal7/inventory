@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presentation: Flyweight & Factory Method in Spring Boot</title>
+  <title>Presentation: Design Patterns in Spring Boot - Professor Walkthrough</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     .slide { display: none; }
     .slide.active { display: flex; }
     .code-box {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       line-height: 1.35;
     }
   </style>
@@ -18,239 +18,281 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased select-none">
 
   <!-- Top Header Navigation -->
-  <header class="bg-slate-950/80 backdrop-blur border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <header class="bg-slate-950/85 backdrop-blur border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center gap-3">
       <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="font-bold text-sm tracking-wide text-slate-200 uppercase">Architecture Presentation</span>
+      <span class="font-bold text-sm tracking-wide text-slate-200 uppercase">Architecture Presentation to Professor</span>
       <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">Spring Boot 3.3 • Java 17</span>
     </div>
     <div class="flex items-center gap-4">
       <button id="toggleNotesBtn" onclick="toggleSpeakerNotes()" class="text-xs bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
-        <span>🎙️</span> <span id="notesBtnText">Show Speaker Script</span>
+        <span>🎙️</span> <span id="notesBtnText">Show Speaker Script (What to Say)</span>
       </button>
       <div class="text-sm font-semibold text-slate-400">
-        Slide <span id="currentSlideNum" class="text-emerald-400 font-bold">1</span> / <span id="totalSlides">8</span>
+        Slide <span id="currentSlideNum" class="text-emerald-400 font-bold">1</span> / <span id="totalSlides">10</span>
       </div>
     </div>
   </header>
 
   <!-- Main Slide Canvas -->
-  <main class="flex-1 flex items-center justify-center p-6 md:p-10 max-w-6xl w-full mx-auto">
+  <main class="flex-1 flex items-center justify-center p-6 md:p-8 max-w-6xl w-full mx-auto">
 
     <!-- SLIDE 1: Title Slide -->
-    <div class="slide active flex-col items-center text-center gap-6 w-full animate-fadeIn" data-title="Title Slide">
+    <div class="slide active flex-col items-center text-center gap-5 w-full" data-title="Title Slide">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-        Software Architecture & Design Patterns
+        Software Architecture & Design Patterns Defense
       </div>
       <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-4xl">
-        E-Commerce Warehouse Inventory
+        Solving Hardware Limits & Code Rigidity
       </h1>
-      <h2 class="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-        Demonstrating Flyweight & Factory Method Patterns
+      <h2 class="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+        Flyweight & Factory Method Patterns in Spring Boot
       </h2>
-      <p class="text-slate-400 max-w-2xl text-base leading-relaxed">
-        Eliminating severe memory bloat and tight coupling in massive inventory batch processing using real JVM memory telemetry.
+      <p class="text-slate-400 max-w-2xl text-sm leading-relaxed">
+        An empirical investigation contrasting a memory-bloated, tightly-coupled baseline against an optimized GoF architectural solution.
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl mt-4 text-left">
-        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4">
-          <div class="text-emerald-400 text-sm font-bold mb-1">Structural Pattern</div>
-          <div class="text-white font-semibold text-lg">Flyweight</div>
-          <div class="text-slate-400 text-xs mt-1">Shared 5MB intrinsic state vs lightweight extrinsic box data.</div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 w-full max-w-4xl mt-3 text-left">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-3">
+          <div class="text-amber-400 text-xs font-bold uppercase">Step 1</div>
+          <div class="text-white font-semibold text-sm mt-0.5">The "Why"</div>
+          <div class="text-slate-400 text-[11px] mt-1">Why do design patterns exist in production systems?</div>
         </div>
-        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4">
-          <div class="text-cyan-400 text-sm font-bold mb-1">Creational Pattern</div>
-          <div class="text-white font-semibold text-lg">Factory Method</div>
-          <div class="text-slate-400 text-xs mt-1">Subclass instantiation hooks conforming to Open/Closed Principle.</div>
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-3">
+          <div class="text-rose-400 text-xs font-bold uppercase">Step 2</div>
+          <div class="text-white font-semibold text-sm mt-0.5">The Problem</div>
+          <div class="text-slate-400 text-[11px] mt-1">5GB RAM bloat (OOM) & rigid switch statements.</div>
         </div>
-        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4">
-          <div class="text-purple-400 text-sm font-bold mb-1">Verification</div>
-          <div class="text-white font-semibold text-lg">Live Telemetry</div>
-          <div class="text-slate-400 text-xs mt-1">Real JVM heap snapshots: 120MB vs 5MB (99.8% reduction).</div>
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-3">
+          <div class="text-emerald-400 text-xs font-bold uppercase">Step 3</div>
+          <div class="text-white font-semibold text-sm mt-0.5">The Solution</div>
+          <div class="text-slate-400 text-[11px] mt-1">Flyweight sharing + Factory Method OCP compliance.</div>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-3">
+          <div class="text-cyan-400 text-xs font-bold uppercase">Step 4</div>
+          <div class="text-white font-semibold text-sm mt-0.5">Codebase & Live</div>
+          <div class="text-slate-400 text-[11px] mt-1">Live Spring Boot REST API & heap telemetry proof.</div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 2: Domain Scenario & The Problem -->
-    <div class="slide flex-col gap-6 w-full" data-title="The Domain Problem">
+    <!-- SLIDE 2: Why Design Patterns? (NEW) -->
+    <div class="slide flex-col gap-6 w-full" data-title="Why Design Patterns?">
       <div class="border-b border-slate-800 pb-3">
-        <span class="text-xs uppercase font-bold text-rose-400 tracking-wider">Phase 1: The Problem</span>
-        <h2 class="text-3xl font-bold text-white mt-1">Warehouse Ingestion at Scale</h2>
+        <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">Step 1: The Engineering Foundation</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Why Do We Need Design Patterns?</h2>
+        <p class="text-slate-400 text-sm">"Why not just write simple, direct code? Why add layers of design?"</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Physical Item vs Product -->
-        <div class="bg-slate-800/50 border border-slate-700/70 rounded-xl p-5">
-          <h3 class="text-lg font-bold text-slate-200 mb-3 flex items-center gap-2">
-            <span>📦</span> Domain Components
-          </h3>
-          <div class="space-y-4">
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
-              <span class="text-xs font-bold text-cyan-400 uppercase">1. Physical Box (Unique)</span>
-              <p class="text-slate-300 text-sm mt-1">Has an individual barcode (<code class="text-emerald-300">BAR-821D</code>) and physical shelf coordinates (<code class="text-emerald-300">AISLE-1-SHELF-3</code>).</p>
-            </div>
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
-              <span class="text-xs font-bold text-amber-400 uppercase">2. Catalog Product (Heavy)</span>
-              <p class="text-slate-300 text-sm mt-1">Has SKU, product title, and a heavy <b class="text-rose-400">5 MB</b> high-res photo/specification payload.</p>
-            </div>
-          </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-bold text-rose-400 uppercase tracking-wide">Crisis #1: Physical Hardware Limits</div>
+          <div class="text-white font-bold text-lg mt-1">The Memory & Resource Boundary</div>
+          <p class="text-slate-300 text-xs mt-2 leading-relaxed">
+            In toy programs with 5 items, any code works. But in real-world high-throughput platforms (Amazon, Netflix, Uber):
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 mt-3">
+            <li class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+              ❌ <b>RAM is finite:</b> Careless object allocation creates millions of duplicated objects, saturating the heap and triggering catastrophic <code class="text-rose-400">OutOfMemoryError</code>.
+            </li>
+            <li class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+              ❌ <b>Garbage Collection Pause:</b> Constant allocations cause frequent stop-the-world GC cycles, freezing server response times.
+            </li>
+          </ul>
         </div>
 
-        <!-- The Naive Pitfall -->
-        <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-5">
-          <h3 class="text-lg font-bold text-rose-300 mb-3 flex items-center gap-2">
-            <span>⚠️</span> The Dual Architectural Violations
-          </h3>
-          <div class="space-y-3 text-sm">
-            <div class="p-3 bg-rose-900/30 rounded-lg border border-rose-800/40">
-              <b class="text-rose-200 block mb-1">1. Memory Bloat (No Flyweight):</b>
-              <code class="text-rose-300 text-xs">NaiveInventoryItem</code> allocates a new 5MB byte array for every single box. Receiving 1,000 boxes allocates <b>5,000 MB (5 GB)</b>, instantly crashing standard JVM heaps with <code class="text-rose-400 font-bold">OutOfMemoryError</code>.
-            </div>
-            <div class="p-3 bg-rose-900/30 rounded-lg border border-rose-800/40">
-              <b class="text-rose-200 block mb-1">2. Tight Coupling (No Factory Method):</b>
-              <code class="text-rose-300 text-xs">NaiveShipmentProcessor</code> uses a rigid <code class="text-rose-400 font-bold">switch(type)</code>. Adding "Toys" or "Groceries" violates the <b>Open/Closed Principle (OCP)</b>.
-            </div>
-          </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-bold text-cyan-400 uppercase tracking-wide">Crisis #2: The Software Evolution Reality</div>
+          <div class="text-white font-bold text-lg mt-1">The Coupling & Change Fragility</div>
+          <p class="text-slate-300 text-xs mt-2 leading-relaxed">
+            Business requirements change constantly. New products and workflows are introduced weekly:
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 mt-3">
+            <li class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+              ❌ <b>Rigid Spaghetti Code:</b> Without patterns, developers use massive <code class="text-rose-400">switch/if-else</code> chains. Every new feature requires editing existing core code.
+            </li>
+            <li class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+              ❌ <b>Violation of Open/Closed Principle:</b> Modifying existing production files introduces regression bugs and expensive re-testing cycles.
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <div class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl text-center text-xs text-amber-200">
+        💡 <b>The Core Premise:</b> Design patterns are not theoretical exercises—they are proven architectural patterns to prevent system crashes and code decay.
       </div>
     </div>
 
-    <!-- SLIDE 3: The Flyweight Pattern -->
-    <div class="slide flex-col gap-6 w-full" data-title="Flyweight Pattern">
-      <div class="border-b border-slate-800 pb-3">
-        <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Solution: Structural Pattern</span>
-        <h2 class="text-3xl font-bold text-white mt-1">The Flyweight Pattern</h2>
-        <p class="text-slate-400 text-sm">"Use sharing to support large numbers of fine-grained objects efficiently."</p>
+    <!-- SLIDE 3: The Warehouse Scenario & The Problem -->
+    <div class="slide flex-col gap-5 w-full" data-title="The Specific Problem">
+      <div class="border-b border-slate-800 pb-2">
+        <span class="text-xs uppercase font-bold text-rose-400 tracking-wider">Step 2: The Domain Scenario</span>
+        <h2 class="text-2xl font-bold text-white mt-1">The Problem in our Warehouse Ingestion</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-          <div>
-            <div class="text-xs font-bold text-emerald-400 uppercase tracking-wide">1. The Flyweight</div>
-            <div class="text-white font-bold text-lg mt-1">ProductCatalogItem</div>
-            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
-              Stores <b>Intrinsic State</b>: Invariant and immutable. Holds the SKU, title, and the heavy 5MB image buffer.
-            </p>
-          </div>
-          <div class="mt-4 p-2 bg-slate-900 rounded text-xs text-slate-300 border border-slate-800">
-            ✅ Allocated <b>exactly once</b> per unique SKU.
-          </div>
-        </div>
-
-        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-          <div>
-            <div class="text-xs font-bold text-cyan-400 uppercase tracking-wide">2. The Flyweight Factory</div>
-            <div class="text-white font-bold text-lg mt-1">ProductCatalog</div>
-            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
-              Thread-safe registry utilizing <code class="text-cyan-300">ConcurrentHashMap</code>. Ensures no duplicate Flyweights ever exist in heap memory.
-            </p>
-          </div>
-          <div class="mt-4 p-2 bg-slate-900 rounded text-xs text-slate-300 border border-slate-800">
-            <code class="text-cyan-300 text-[10px]">computeIfAbsent(sku, ...)</code>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4">
+          <div class="text-xs font-bold text-slate-300 uppercase mb-2">The Real-World Domain Data</div>
+          <div class="space-y-3">
+            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+              <b class="text-cyan-400 block mb-0.5">Physical Item (Box on Shelf):</b>
+              Unique to each box: Barcode (<code class="text-emerald-300">BAR-821D</code>) and location (<code class="text-emerald-300">AISLE-1-SHELF-3</code>).
+            </div>
+            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+              <b class="text-amber-400 block mb-0.5">Product Catalog Entry:</b>
+              Identical for all boxes of this product: SKU, Title, and heavy <b class="text-rose-400">5 MB</b> high-resolution photo/spec buffer.
+            </div>
           </div>
         </div>
 
-        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-          <div>
-            <div class="text-xs font-bold text-purple-400 uppercase tracking-wide">3. The Context</div>
-            <div class="text-white font-bold text-lg mt-1">OptimizedInventoryItem</div>
-            <p class="text-slate-400 text-xs mt-2 leading-relaxed">
-              Stores <b>Extrinsic State</b>: Barcode and shelf location. Holds an 8-byte pointer to the shared Flyweight.
-            </p>
-          </div>
-          <div class="mt-4 p-2 bg-slate-900 rounded text-xs text-emerald-300 border border-slate-800 font-semibold">
-            ⚡ Footprint: ~40 bytes (vs 5MB!)
+        <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-4">
+          <div class="text-xs font-bold text-rose-400 uppercase mb-2">What Happened Without Design Patterns (Naive Code)</div>
+          <div class="space-y-2">
+            <div class="p-2.5 bg-rose-900/30 rounded border border-rose-800/40 text-rose-200">
+              <b>1. Memory Bloat (No Flyweight):</b> Every single box allocated its own 5MB byte array.
+              <div class="mt-1 font-mono text-[11px] text-rose-300">1,000 items × 5 MB = 5,000 MB (5 GB RAM)!</div>
+              Server exhausted heap and crashed with <code class="text-white font-bold bg-rose-800 px-1 rounded">OutOfMemoryError</code>.
+            </div>
+            <div class="p-2.5 bg-rose-900/30 rounded border border-rose-800/40 text-rose-200">
+              <b>2. Tight Coupling (No Factory Method):</b> <code class="text-rose-300">NaiveShipmentProcessor</code> used hardcoded <code class="text-white">switch(type)</code>. Adding a product requires modifying existing processor code (violates OCP).
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs flex items-center justify-between">
-        <span class="text-slate-400 font-mono">1,000 Items Memory Cost:</span>
-        <span class="text-slate-300"><span class="text-rose-400 font-bold">Naive:</span> 1,000 × 5MB = 5,000 MB</span>
-        <span class="text-emerald-400 font-bold">vs</span>
-        <span class="text-slate-300"><span class="text-emerald-400 font-bold">Flyweight:</span> (1 × 5MB) + (1,000 × 40B) ≈ <b>5.04 MB</b></span>
+      <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-center font-mono text-xs text-rose-300">
+        1,000 Boxes Shipment &rarr; 5 GB Heap Allocated &rarr; Server Crashed & Dead Code Architecture
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Solution Part 1 - Flyweight -->
+    <div class="slide flex-col gap-5 w-full" data-title="Flyweight Solution">
+      <div class="border-b border-slate-800 pb-2">
+        <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Step 3A: The Memory Solution</span>
+        <h2 class="text-2xl font-bold text-white mt-1">How Flyweight Resolves the 5 GB Memory Crash</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wide">1. The Flyweight</span>
+            <div class="text-white font-bold text-base mt-1">ProductCatalogItem</div>
+            <p class="text-slate-400 text-xs mt-1">
+              Holds <b>Intrinsic State</b>: Invariant and immutable. Holds SKU, title, and the heavy 5MB image buffer.
+            </p>
+          </div>
+          <div class="p-2 bg-slate-900 rounded text-xs text-emerald-300 border border-slate-800 mt-2 font-semibold">
+            Allocated ONCE per SKU
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wide">2. The Flyweight Factory</span>
+            <div class="text-white font-bold text-base mt-1">ProductCatalog</div>
+            <p class="text-slate-400 text-xs mt-1">
+              Thread-safe registry utilizing <code class="text-cyan-300">ConcurrentHashMap</code>. Uses atomic <code class="text-cyan-300">computeIfAbsent()</code> to cache singletons.
+            </p>
+          </div>
+          <div class="p-2 bg-slate-900 rounded text-xs text-cyan-300 border border-slate-800 mt-2 font-semibold">
+            Thread-Safe Singleton Cache
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wide">3. The Context</span>
+            <div class="text-white font-bold text-base mt-1">OptimizedInventoryItem</div>
+            <p class="text-slate-400 text-xs mt-1">
+              Holds <b>Extrinsic State</b>: Unique barcode, shelf location, and an 8-byte reference pointer to the Flyweight.
+            </p>
+          </div>
+          <div class="p-2 bg-slate-900 rounded text-xs text-purple-300 border border-slate-800 mt-2 font-semibold">
+            Footprint: ~40 Bytes (vs 5MB!)
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-xl text-xs flex items-center justify-between">
+        <span class="text-slate-300">Memory Math for 1,000 Items:</span>
+        <span class="text-rose-400 font-bold">Naive: 5,000 MB (Crash)</span>
+        <span class="text-white font-bold">&rarr;</span>
+        <span class="text-emerald-400 font-bold">Flyweight: 1 × 5 MB + (1,000 × 40B) ≈ 5.04 MB</span>
         <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">99.8% Savings</span>
       </div>
     </div>
 
-    <!-- SLIDE 4: The Factory Method Pattern -->
-    <div class="slide flex-col gap-6 w-full" data-title="Factory Method Pattern">
-      <div class="border-b border-slate-800 pb-3">
-        <span class="text-xs uppercase font-bold text-cyan-400 tracking-wider">Solution: Creational Pattern</span>
-        <h2 class="text-3xl font-bold text-white mt-1">The Factory Method Pattern</h2>
-        <p class="text-slate-400 text-sm">"Define an interface for creating an object, but let subclasses decide which class to instantiate."</p>
+    <!-- SLIDE 5: Solution Part 2 - Factory Method -->
+    <div class="slide flex-col gap-5 w-full" data-title="Factory Method Solution">
+      <div class="border-b border-slate-800 pb-2">
+        <span class="text-xs uppercase font-bold text-cyan-400 tracking-wider">Step 3B: The Coupling Solution</span>
+        <h2 class="text-2xl font-bold text-white mt-1">How Factory Method Resolves Tight Coupling (OCP)</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Abstract Creator & Concrete Creators -->
-        <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="space-y-3 text-xs">
           <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4">
-            <span class="text-xs font-bold text-cyan-400 uppercase">The Creator (Abstract Base Class)</span>
+            <span class="text-[10px] font-bold text-cyan-400 uppercase">The Creator (Abstract Base Class)</span>
             <div class="text-white font-bold text-base mt-1">ShipmentReceiver</div>
-            <p class="text-slate-400 text-xs mt-1">
-              Encapsulates the standard warehouse receiving loop in <code class="text-slate-300">processShipment(count)</code>, delegating individual item construction to:
+            <p class="text-slate-400 mt-1">
+              Standardizes the universal batch loop in <code class="text-slate-300">processShipment(count)</code>, but delegates item instantiation to the abstract factory method:
             </p>
-            <div class="bg-slate-900 p-2 rounded mt-2 text-cyan-300 font-mono text-xs">
+            <div class="bg-slate-900 p-2 rounded mt-2 text-cyan-300 font-mono text-[11px]">
               protected abstract OptimizedInventoryItem createInventoryItem(String barcode, String location);
             </div>
           </div>
 
           <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4">
-            <span class="text-xs font-bold text-emerald-400 uppercase">Concrete Creators</span>
+            <span class="text-[10px] font-bold text-emerald-400 uppercase">Concrete Creators (Subclasses)</span>
             <div class="grid grid-cols-3 gap-2 mt-2 text-center text-xs">
-              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200">
-                <b class="text-white block">Electronics</b>Receiver
-              </div>
-              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200">
-                <b class="text-white block">Books</b>Receiver
-              </div>
-              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200">
-                <b class="text-white block">Clothing</b>Receiver
-              </div>
+              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200"><b>Electronics</b>Receiver</div>
+              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200"><b>Books</b>Receiver</div>
+              <div class="bg-slate-900 p-2 rounded border border-slate-800 text-slate-200"><b>Clothing</b>Receiver</div>
             </div>
-            <p class="text-slate-400 text-xs mt-2">
-              Each subclass binds its specific SKU to the shared Flyweight catalog and returns the context item.
+            <p class="text-slate-400 mt-2">
+              Each subclass implements <code class="text-emerald-300">createInventoryItem()</code> to resolve its Flyweight from the catalog.
             </p>
           </div>
         </div>
 
-        <!-- Strategy Registry & OCP -->
-        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5 flex flex-col justify-between text-xs">
           <div>
-            <span class="text-xs font-bold text-purple-400 uppercase">Spring DI Dynamic Registry</span>
-            <div class="text-white font-bold text-lg mt-1">ShipmentReceiverRegistry</div>
-            <p class="text-slate-300 text-sm mt-3 leading-relaxed">
-              By injecting <code class="text-purple-300">List&lt;ShipmentReceiver&gt;</code> into the constructor, Spring automatically discovers all concrete receivers on the classpath.
+            <span class="text-[10px] font-bold text-purple-400 uppercase">Spring DI Registry (Zero Switch Statements)</span>
+            <div class="text-white font-bold text-base mt-1">ShipmentReceiverRegistry</div>
+            <p class="text-slate-300 mt-2 leading-relaxed">
+              Spring auto-injects all <code class="text-purple-300">List&lt;ShipmentReceiver&gt;</code> into a dynamic lookup map at startup.
             </p>
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 mt-3 text-xs text-slate-300 space-y-1">
-              <div>✅ <b>No switch or if/else statements</b> anywhere in the controllers.</div>
-              <div>✅ <b>Open for Extension:</b> Adding <code class="text-emerald-400">ToysReceiver</code> requires creating a new class; zero existing classes are modified.</div>
-              <div>✅ <b>Closed for Modification:</b> Core intake engine is immutable.</div>
+            <div class="space-y-2 mt-3 text-slate-300">
+              <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                ✅ <b>Closed for Modification:</b> Core shipment engine is frozen and safe from regressions.
+              </div>
+              <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                ✅ <b>Open for Extension:</b> Adding <code class="text-emerald-300">GroceriesReceiver</code> requires only creating a new class with <code class="text-emerald-300">@Component</code>. Zero existing files are touched!
+              </div>
             </div>
           </div>
-          <div class="mt-4 p-2 bg-emerald-500/10 text-emerald-400 rounded text-xs border border-emerald-500/30 text-center font-semibold">
-            100% Compliant with Open/Closed Principle (OCP)
+          <div class="p-2 bg-emerald-500/10 text-emerald-300 rounded border border-emerald-500/30 text-center font-bold mt-3">
+            Open/Closed Principle (OCP) Fully Satisfied
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 5: System Architecture -->
-    <div class="slide flex-col gap-5 w-full" data-title="System Architecture">
+    <!-- SLIDE 6: Architecture Overview -->
+    <div class="slide flex-col gap-5 w-full" data-title="Architecture Flow">
       <div class="border-b border-slate-800 pb-2">
-        <span class="text-xs uppercase font-bold text-indigo-400 tracking-wider">Architecture Overview</span>
-        <h2 class="text-2xl font-bold text-white mt-1">Spring Boot Application Structure</h2>
+        <span class="text-xs uppercase font-bold text-indigo-400 tracking-wider">Architecture Comparison</span>
+        <h2 class="text-2xl font-bold text-white mt-1">Side-by-Side Architectural Flow</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <!-- Naive Flow -->
-        <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-4 text-xs">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+        <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-4">
           <div class="font-bold text-rose-300 text-sm mb-2 flex items-center justify-between">
-            <span>❌ Naive Architecture</span>
+            <span>❌ Naive Architecture (Anti-Pattern)</span>
             <span class="text-[10px] bg-rose-900/50 px-2 py-0.5 rounded">Tightly Coupled</span>
           </div>
           <div class="space-y-2">
-            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between">
+            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between">
               <span>Client HTTP Request</span>
               <span class="text-rose-400 font-mono">POST /api/v1/naive/receive</span>
             </div>
@@ -260,75 +302,73 @@
               <div class="text-slate-400 mt-1">switch(type) &rarr; <code class="text-rose-400">new NaiveInventoryItem(...)</code></div>
             </div>
             <div class="text-center text-slate-600">↓</div>
-            <div class="bg-rose-900/30 p-2.5 rounded border border-rose-800/40 text-rose-200">
-              <b>Result:</b> 1,000 independent 5MB arrays = <b>5 GB RAM</b> &rarr; 💥 Heap Exhaustion / OOM.
+            <div class="bg-rose-900/30 p-2 rounded border border-rose-800/40 text-rose-200">
+              <b>Result:</b> 1,000 separate 5MB arrays = <b>5 GB RAM</b> &rarr; 💥 Heap Exhaustion / OOM.
             </div>
           </div>
         </div>
 
-        <!-- Optimized Flow -->
-        <div class="bg-emerald-950/20 border border-emerald-500/30 rounded-xl p-4 text-xs">
+        <div class="bg-emerald-950/20 border border-emerald-500/30 rounded-xl p-4">
           <div class="font-bold text-emerald-300 text-sm mb-2 flex items-center justify-between">
-            <span>✅ Optimized Architecture</span>
+            <span>✅ Optimized Architecture (Patterns)</span>
             <span class="text-[10px] bg-emerald-900/50 px-2 py-0.5 rounded">Flyweight + Factory Method</span>
           </div>
           <div class="space-y-2">
-            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between">
+            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between">
               <span>Client HTTP Request</span>
               <span class="text-emerald-400 font-mono">POST /api/v1/optimized/receive</span>
             </div>
             <div class="text-center text-slate-600">↓</div>
-            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between">
+            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between">
               <span>ShipmentReceiverRegistry</span>
               <span class="text-cyan-300 font-mono">O(1) Map Lookup</span>
             </div>
             <div class="text-center text-slate-600">↓</div>
-            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex items-center justify-between">
-              <span>ElectronicsReceiver (Creator)</span>
+            <div class="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between">
+              <span>ElectronicsReceiver</span>
               <span class="text-slate-400">calls <code class="text-emerald-300">createInventoryItem()</code></span>
             </div>
             <div class="text-center text-slate-600">↓</div>
-            <div class="bg-emerald-900/30 p-2.5 rounded border border-emerald-800/40 text-emerald-200">
-              <b>Result:</b> 1 shared Flyweight in ProductCatalog + 1,000 tiny context boxes = <b>6.14 MB RAM</b>.
+            <div class="bg-emerald-900/30 p-2 rounded border border-emerald-800/40 text-emerald-200">
+              <b>Result:</b> 1 shared Flyweight in ProductCatalog + 1,000 context boxes = <b>6.14 MB RAM</b>.
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 6: Live Interactive Memory Simulator -->
-    <div class="slide flex-col gap-6 w-full" data-title="Live Memory Simulator">
-      <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+    <!-- SLIDE 7: Live Memory Simulator -->
+    <div class="slide flex-col gap-5 w-full" data-title="Live Simulator">
+      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
         <div>
-          <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">Live Demonstration Tool</span>
-          <h2 class="text-3xl font-bold text-white mt-1">Interactive Memory Allocation Simulator</h2>
+          <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">Interactive Tool</span>
+          <h2 class="text-2xl font-bold text-white mt-1">Live Memory Allocation Simulator</h2>
         </div>
         <div class="text-xs bg-slate-800 px-3 py-1 rounded text-slate-300">
-          Simulating 5MB Image per SKU
+          5MB Image per SKU Simulation
         </div>
       </div>
 
-      <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-6">
-        <div class="flex items-center justify-between mb-3">
-          <label for="itemSlider" class="text-sm font-bold text-slate-200">
-            Number of Arriving Inventory Boxes (<code id="sliderValueText" class="text-emerald-400 text-base">500</code> items):
+      <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-5">
+        <div class="flex items-center justify-between mb-2">
+          <label for="itemSlider" class="text-xs font-bold text-slate-200">
+            Number of Arriving Inventory Boxes (<code id="sliderValueText" class="text-emerald-400 text-sm">500</code> items):
           </label>
-          <span class="text-xs text-slate-400">Drag slider to test scale:</span>
+          <span class="text-xs text-slate-400">Drag to demonstrate scale to professor:</span>
         </div>
         <input id="itemSlider" type="range" min="10" max="1000" step="10" value="500" 
                class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                oninput="updateMemorySimulation(this.value)">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <!-- Naive Box -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
           <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-xl">
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-1">
               <span class="text-xs font-bold text-rose-400 uppercase">Naive Implementation</span>
               <span id="naiveOomBadge" class="hidden text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/40 px-2 py-0.5 rounded font-bold">CRASH: OOM EXCEEDED</span>
             </div>
-            <div class="text-3xl font-black text-rose-300" id="naiveRamText">2,500 MB</div>
+            <div class="text-2xl font-black text-rose-300" id="naiveRamText">2,500 MB</div>
             <p class="text-slate-400 text-xs mt-1" id="naiveFormulaText">500 items × 5 MB = 2,500 MB</p>
-            <div class="w-full bg-slate-800 h-3 rounded-full mt-3 overflow-hidden">
+            <div class="w-full bg-slate-800 h-2.5 rounded-full mt-3 overflow-hidden">
               <div id="naiveBar" class="bg-rose-500 h-full transition-all duration-200" style="width: 100%;"></div>
             </div>
             <div class="text-[10px] text-slate-500 mt-1 flex justify-between">
@@ -337,15 +377,14 @@
             </div>
           </div>
 
-          <!-- Optimized Box -->
           <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-xl">
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-1">
               <span class="text-xs font-bold text-emerald-400 uppercase">Flyweight Implementation</span>
               <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded font-bold">1 PAYLOAD INSTANCE</span>
             </div>
-            <div class="text-3xl font-black text-emerald-300" id="optRamText">5.02 MB</div>
+            <div class="text-2xl font-black text-emerald-300" id="optRamText">5.02 MB</div>
             <p class="text-slate-400 text-xs mt-1" id="optFormulaText">(1 × 5 MB) + (500 × 40 bytes) ≈ 5.02 MB</p>
-            <div class="w-full bg-slate-800 h-3 rounded-full mt-3 overflow-hidden">
+            <div class="w-full bg-slate-800 h-2.5 rounded-full mt-3 overflow-hidden">
               <div id="optBar" class="bg-emerald-500 h-full transition-all duration-200" style="width: 0.25%;"></div>
             </div>
             <div class="text-[10px] text-slate-500 mt-1 flex justify-between">
@@ -357,65 +396,114 @@
       </div>
     </div>
 
-    <!-- SLIDE 7: Real Benchmark Results -->
-    <div class="slide flex-col gap-6 w-full" data-title="Benchmark Results">
-      <div class="border-b border-slate-800 pb-3">
-        <span class="text-xs uppercase font-bold text-purple-400 tracking-wider">Empirical Validation</span>
-        <h2 class="text-3xl font-bold text-white mt-1">Live Server Benchmark Telemetry</h2>
-        <p class="text-slate-400 text-sm">Actual measurements recorded using <code class="text-purple-300">System.gc()</code> before and after execution.</p>
+    <!-- SLIDE 8: Real Server Benchmark Telemetry -->
+    <div class="slide flex-col gap-5 w-full" data-title="Real Telemetry">
+      <div class="border-b border-slate-800 pb-2">
+        <span class="text-xs uppercase font-bold text-purple-400 tracking-wider">Live Proof</span>
+        <h2 class="text-2xl font-bold text-white mt-1">Live Server Benchmark Telemetry</h2>
+        <p class="text-slate-400 text-xs">Empirical measurements taken on our live Spring Boot server with GC stabilization.</p>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-sm">
+        <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="border-b border-slate-700 bg-slate-800/80 text-slate-300">
-              <th class="p-3">Scenario</th>
-              <th class="p-3">Item Count</th>
-              <th class="p-3">Payload Copies</th>
-              <th class="p-3">Memory Consumed</th>
-              <th class="p-3">Status</th>
+              <th class="p-2.5">Scenario</th>
+              <th class="p-2.5">Item Count</th>
+              <th class="p-2.5">Payload Copies</th>
+              <th class="p-2.5">Memory Consumed</th>
+              <th class="p-2.5">Response Status</th>
             </tr>
           </thead>
-          <tbody class="divide-y border-slate-800 text-xs">
+          <tbody class="divide-y divide-slate-800">
             <tr class="hover:bg-slate-800/30">
-              <td class="p-3 font-semibold text-rose-300">Naive Implementation</td>
-              <td class="p-3">20 boxes</td>
-              <td class="p-3">20 copies</td>
-              <td class="p-3 font-bold text-rose-400">120.00 MB</td>
-              <td class="p-3 text-emerald-400">200 OK</td>
+              <td class="p-2.5 font-semibold text-rose-300">Naive Implementation</td>
+              <td class="p-2.5">20 boxes</td>
+              <td class="p-2.5">20 copies</td>
+              <td class="p-2.5 font-bold text-rose-400">120.00 MB</td>
+              <td class="p-2.5 text-emerald-400">200 OK</td>
             </tr>
             <tr class="hover:bg-slate-800/30 bg-rose-950/20">
-              <td class="p-3 font-semibold text-rose-300">Naive Implementation</td>
-              <td class="p-3">1,000 boxes</td>
-              <td class="p-3">Failed allocation</td>
-              <td class="p-3 font-bold text-rose-400">> 2,048 MB (Exhausted)</td>
-              <td class="p-3 text-rose-400 font-bold">507 OutOfMemory</td>
+              <td class="p-2.5 font-semibold text-rose-300">Naive Implementation</td>
+              <td class="p-2.5">1,000 boxes</td>
+              <td class="p-2.5">Failed allocation</td>
+              <td class="p-2.5 font-bold text-rose-400">> 2,048 MB (Exhausted)</td>
+              <td class="p-2.5 text-rose-400 font-bold">507 OutOfMemory</td>
             </tr>
             <tr class="hover:bg-slate-800/30 bg-emerald-950/20 font-semibold">
-              <td class="p-3 text-emerald-300">Optimized (Flyweight)</td>
-              <td class="p-3">1,000 boxes</td>
-              <td class="p-3 text-emerald-400 font-bold">Exactly 1 copy</td>
-              <td class="p-3 font-bold text-emerald-400">6.14 MB</td>
-              <td class="p-3 text-emerald-400 font-bold">200 OK (0.4s)</td>
+              <td class="p-2.5 text-emerald-300">Optimized (Flyweight)</td>
+              <td class="p-2.5">1,000 boxes</td>
+              <td class="p-2.5 text-emerald-400 font-bold">Exactly 1 copy</td>
+              <td class="p-2.5 font-bold text-emerald-400">6.14 MB</td>
+              <td class="p-2.5 text-emerald-400 font-bold">200 OK (0.4s)</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 text-xs">
+      <div class="grid grid-cols-2 gap-3 text-xs">
         <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
-          <span class="text-emerald-400 font-bold block mb-1">Key Takeaway #1: Memory Efficiency</span>
-          For 1,000 items, the Flyweight pattern achieved a <b>99.8% reduction in heap memory</b> compared to the naive approach.
+          <span class="text-emerald-400 font-bold block mb-0.5">99.8% Memory Reduction:</span>
+          For 1,000 items, heap consumption dropped from a fatal 5 GB down to just 6.14 MB.
         </div>
         <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
-          <span class="text-cyan-400 font-bold block mb-1">Key Takeaway #2: Garbage Collection Health</span>
-          The JVM avoids hundreds of heavy 5MB object allocations, drastically eliminating GC pause times and stop-the-world stutter.
+          <span class="text-cyan-400 font-bold block mb-0.5">Healthy Garbage Collection:</span>
+          The JVM avoids allocating thousands of short-lived 5MB buffers, preventing GC pauses.
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 8: Summary & Teacher Q&A -->
-    <div class="slide flex-col gap-6 w-full" data-title="Summary & Conclusion">
+    <!-- SLIDE 9: Codebase Guide (NEW) -->
+    <div class="slide flex-col gap-4 w-full" data-title="Codebase Walkthrough">
+      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+        <div>
+          <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Step 4: Live Code Inspection</span>
+          <h2 class="text-2xl font-bold text-white mt-1">What to Show the Professor in the Codebase</h2>
+        </div>
+        <div class="text-xs bg-slate-800 px-3 py-1 rounded text-slate-300">
+          IDE & Postman Guide
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-2">
+          <span class="text-xs font-bold text-rose-400 uppercase">1. Show the Problem Files</span>
+          <div class="p-2.5 bg-slate-900 rounded border border-slate-800">
+            <code class="text-rose-300 font-bold">NaiveInventoryItem.java (Line 35):</code>
+            <p class="text-slate-400 text-[11px] mt-0.5">Point out: <code class="text-slate-200">this.heavyImageData = new byte[5 * 1024 * 1024];</code> allocated per box.</p>
+          </div>
+          <div class="p-2.5 bg-slate-900 rounded border border-slate-800">
+            <code class="text-rose-300 font-bold">NaiveShipmentProcessor.java (Line 49):</code>
+            <p class="text-slate-400 text-[11px] mt-0.5">Point out the rigid <code class="text-slate-200">switch(type)</code> violating the Open/Closed Principle.</p>
+          </div>
+          <div class="p-2.5 bg-rose-950/40 rounded border border-rose-800/40 text-rose-300">
+            <b>Postman Action:</b> Run <code class="text-white">POST /api/v1/naive/receive?count=1000</code> &rarr; Show professor the <b>507 OutOfMemoryError</b>.
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-2">
+          <span class="text-xs font-bold text-emerald-400 uppercase">2. Show the Solution Files</span>
+          <div class="p-2 bg-slate-900 rounded border border-slate-800">
+            <code class="text-emerald-300 font-bold">ProductCatalog.java:</code>
+            <p class="text-slate-400 text-[11px] mt-0.5">Show <code class="text-slate-200">computeIfAbsent()</code> singleton registry per SKU.</p>
+          </div>
+          <div class="p-2 bg-slate-900 rounded border border-slate-800">
+            <code class="text-emerald-300 font-bold">OptimizedInventoryItem.java:</code>
+            <p class="text-slate-400 text-[11px] mt-0.5">Show that it holds only barcode, location, and an 8-byte pointer (~40 bytes).</p>
+          </div>
+          <div class="p-2 bg-slate-900 rounded border border-slate-800">
+            <code class="text-cyan-300 font-bold">ShipmentReceiver.java & Registry:</code>
+            <p class="text-slate-400 text-[11px] mt-0.5">Show abstract <code class="text-slate-200">createInventoryItem()</code> & Spring DI auto-discovery.</p>
+          </div>
+          <div class="p-2 bg-emerald-950/40 rounded border border-emerald-800/40 text-emerald-300">
+            <b>Postman Action:</b> Run <code class="text-white">POST /api/v1/optimized/receive?count=1000</code> &rarr; Show <b>200 OK, 1 catalog copy, 6.14 MB!</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Conclusion -->
+    <div class="slide flex-col gap-6 w-full" data-title="Conclusion & Defense">
       <div class="border-b border-slate-800 pb-3">
         <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Conclusion</span>
         <h2 class="text-3xl font-bold text-white mt-1">Summary of Key Architectural Principles</h2>
@@ -423,43 +511,41 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
-          <h3 class="text-base font-bold text-emerald-300 mb-3">1. Flyweight Pattern</h3>
+          <h3 class="text-base font-bold text-emerald-300 mb-2">1. Flyweight Pattern (Structural)</h3>
           <ul class="text-xs text-slate-300 space-y-2">
-            <li>• <b>Intrinsic State:</b> Kept in <code class="text-emerald-300">ProductCatalogItem</code> (SKU, title, 5MB image).</li>
-            <li>• <b>Extrinsic State:</b> Kept in <code class="text-emerald-300">OptimizedInventoryItem</code> (barcode, aisle shelf).</li>
-            <li>• <b>Factory Registry:</b> <code class="text-emerald-300">ProductCatalog</code> uses thread-safe <code class="text-emerald-300">ConcurrentHashMap.computeIfAbsent</code>.</li>
-            <li>• <b>Verdict:</b> Essential whenever massive object volume causes severe memory duplication.</li>
+            <li>• Separates invariant <b>Intrinsic State</b> from context-dependent <b>Extrinsic State</b>.</li>
+            <li>• Caches heavy payloads in a thread-safe factory registry.</li>
+            <li>• Shrinks heap footprint by <b>99.8%</b> in high-volume batch processing.</li>
           </ul>
         </div>
 
         <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
-          <h3 class="text-base font-bold text-cyan-300 mb-3">2. Factory Method Pattern</h3>
+          <h3 class="text-base font-bold text-cyan-300 mb-2">2. Factory Method Pattern (Creational)</h3>
           <ul class="text-xs text-slate-300 space-y-2">
-            <li>• <b>Abstract Creator:</b> <code class="text-cyan-300">ShipmentReceiver</code> standardizes batch loops.</li>
-            <li>• <b>Concrete Creators:</b> <code class="text-cyan-300">ElectronicsReceiver</code>, <code class="text-cyan-300">BooksReceiver</code> implement creation.</li>
-            <li>• <b>OCP Compliant:</b> New categories can be introduced via new classes without modifying existing code.</li>
-            <li>• <b>Strategy Registry:</b> Spring DI automatically discovers and maps all receivers.</li>
+            <li>• Standardizes workflow in an abstract creator, deferring instantiation to subclasses.</li>
+            <li>• Completely eliminates rigid conditional <code class="text-slate-200">switch</code> blocks.</li>
+            <li>• Satisfies the <b>Open/Closed Principle (OCP)</b> via Spring component discovery.</li>
           </ul>
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-purple-500/10 border border-slate-700 p-4 rounded-xl text-center">
+      <div class="bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 border border-slate-700 p-4 rounded-xl text-center">
         <p class="text-white font-semibold text-sm">
           "Architecture is about separating what changes from what stays the same, and sharing what is identical."
         </p>
-        <span class="text-slate-400 text-xs mt-1 block">Thank you! Ready for questions.</span>
+        <span class="text-slate-400 text-xs mt-1 block">Thank you, Professor. The application is running live on port 8081 for any tests.</span>
       </div>
     </div>
 
   </main>
 
   <!-- Speaker Notes Drawer (Toggled by user) -->
-  <aside id="speakerNotesDrawer" class="hidden bg-amber-950/90 border-t border-amber-600/40 p-4 text-amber-200 text-xs backdrop-blur max-w-6xl w-full mx-auto rounded-t-xl transition-all">
+  <aside id="speakerNotesDrawer" class="hidden bg-amber-950/95 border-t border-amber-600/40 p-4 text-amber-200 text-xs backdrop-blur max-w-6xl w-full mx-auto rounded-t-xl transition-all">
     <div class="flex items-center justify-between mb-1">
       <span class="font-bold uppercase tracking-wider text-amber-400 text-[11px] flex items-center gap-1.5">
         <span>🎙️</span> Presenter Script for Slide <span id="notesSlideNum">1</span>
       </span>
-      <span class="text-[10px] text-amber-300/70">What to say to your teacher right now</span>
+      <span class="text-[10px] text-amber-300/70">What to say to your professor right now</span>
     </div>
     <p id="speakerNotesContent" class="leading-relaxed font-sans text-amber-100 text-sm">
       Loading presenter script...
@@ -467,7 +553,7 @@
   </aside>
 
   <!-- Bottom Navigation Bar -->
-  <footer class="bg-slate-950/80 backdrop-blur border-t border-slate-800 px-6 py-4 flex items-center justify-between sticky bottom-0 z-50">
+  <footer class="bg-slate-950/85 backdrop-blur border-t border-slate-800 px-6 py-3.5 flex items-center justify-between sticky bottom-0 z-50">
     <div class="flex items-center gap-2">
       <span id="slideTitle" class="text-xs text-slate-400 font-medium">Title Slide</span>
     </div>
@@ -490,29 +576,35 @@
     document.getElementById('totalSlides').textContent = totalSlides;
 
     const speakerScripts = [
-      // Slide 1
-      "Good morning, Professor. Today I am presenting our implementation of the Flyweight and Factory Method design patterns in an E-Commerce Warehouse Inventory system built with Spring Boot and Java 17. We didn't just write theoretical code—we created a live test benchmark that empirically proves memory and design optimizations.",
+      // Slide 1: Title
+      "Good morning, Professor. Today I am presenting an architectural evaluation of the Flyweight and Factory Method design patterns in an E-Commerce Warehouse Inventory system built with Spring Boot and Java 17. We didn't just write theoretical code—we built an empirical benchmark with real JVM memory snapshots to prove the optimizations.",
       
-      // Slide 2
-      "Let's look at the problem scenario. When shipments arrive at a warehouse, each box has unique coordinates—like a barcode and shelf location. But catalog information—like the product title, SKU, and a heavy 5MB image—is identical for every box of the same item. In the Naive approach without patterns, each box created its own 5MB image array. For 1,000 boxes, that allocates 5 Gigabytes of RAM, triggering an OutOfMemoryError. Furthermore, it used rigid switch statements, violating the Open/Closed Principle.",
+      // Slide 2: Why Design Patterns?
+      "Before showing my code, I want to address the fundamental engineering question: Why do we even need Design Patterns? In simple school projects with 5 items, any code works. But in production systems handling millions of requests, systems face two inevitable crises: Hardware Resource Limits (computers do not have infinite RAM, and careless allocation causes OutOfMemoryError crashes), and Software Evolution (business requirements change constantly, and rigid code breaks whenever new features are added). Design patterns are proven architectural blueprints to prevent these exact crises.",
       
-      // Slide 3
-      "To solve the memory explosion, we applied the Flyweight pattern. We separated state into Intrinsic State—the heavy 5MB image and SKU stored once in ProductCatalogItem—and Extrinsic State—the unique barcode and location stored in OptimizedInventoryItem. Our ProductCatalog acts as the thread-safe Flyweight Factory using computeIfAbsent to ensure that whether you have 1 box or 1,000 boxes, only ONE 5MB object exists in heap memory.",
+      // Slide 3: The Problem in Warehouse Ingestion
+      "Let's look at our specific domain: an E-Commerce Warehouse receiving shipments. Each physical box has unique data—a barcode and shelf location. But catalog data—SKU, title, and a heavy 5MB image—is identical for all boxes of the same item. In the Naive approach without patterns, each box object allocated its own private 5MB byte array. For 1,000 boxes, that allocates 5 Gigabytes of RAM, crashing standard 2GB JVM heaps with an OutOfMemoryError. Furthermore, it used a hardcoded switch statement, violating the Open/Closed Principle.",
       
-      // Slide 4
-      "To solve the coupling problem, we applied the Factory Method pattern. The abstract class ShipmentReceiver implements the universal receiving workflow in processShipment(), but delegates object instantiation to concrete subclasses like ElectronicsReceiver through the abstract method createInventoryItem(). Combined with Spring DI in our ShipmentReceiverRegistry, we completely eliminated switch statements. Adding a new product category requires zero edits to existing classes.",
+      // Slide 4: Flyweight Solution
+      "To solve the memory explosion, we applied the Flyweight pattern. We separated state into Intrinsic State—the heavy 5MB image and SKU stored once in ProductCatalogItem—and Extrinsic State—the unique barcode and shelf coordinates stored in OptimizedInventoryItem. Our ProductCatalog acts as the thread-safe Flyweight Factory using computeIfAbsent to ensure that whether you receive 1 box or 1,000 boxes, only ONE 5MB object is ever created in heap memory.",
       
-      // Slide 5
-      "Here is the architecture comparison. On the left is the Naive Anti-Pattern: the controller calls a monolithic switch processor that instantiates heavy items directly. On the right is our Optimized architecture: the controller resolves a creator strategy from the registry, and the creator retrieves the shared Flyweight from the catalog, assembling lightweight context objects.",
+      // Slide 5: Factory Method Solution
+      "To solve the coupling problem, we applied the Factory Method pattern. The abstract class ShipmentReceiver writes the universal batch intake loop in processShipment(), but leaves object creation abstract in createInventoryItem(). Subclasses like ElectronicsReceiver, BooksReceiver, and ClothingReceiver implement this hook. Combined with Spring's dependency injection in ShipmentReceiverRegistry, all receivers are auto-discovered at startup. We eliminated switch statements entirely. Adding a new category requires zero edits to existing classes.",
       
-      // Slide 6
-      "Let me demonstrate the memory scaling with this interactive tool. When receiving 10 items, both methods seem manageable. But watch what happens as we scale to 500 or 1,000 items: the Naive approach scales linearly past 2GB and hits OutOfMemoryError. Meanwhile, the Flyweight pattern stays virtually flat at approximately 5 to 6 MB, because the 5MB payload is instantiated only once.",
+      // Slide 6: Architecture Overview
+      "Here is the architecture comparison: On the left is the Naive Anti-Pattern, where the controller calls a monolithic switch processor that instantiates heavy items directly. On the right is our Optimized architecture: the controller resolves a creator strategy from the registry, and the creator retrieves the shared Flyweight from the catalog, assembling lightweight context objects.",
       
-      // Slide 7
-      "Here are our actual empirical benchmark readings taken directly from the running Spring Boot server. In the Naive endpoint, 20 boxes consumed 120 Megabytes, and 1,000 boxes triggered an OutOfMemoryError. In the Optimized endpoint, 1,000 boxes consumed only 6.14 Megabytes—a 99.8% reduction in memory usage.",
+      // Slide 7: Live Memory Simulator
+      "Let me demonstrate the memory scaling with this interactive tool. Watch what happens as shipment volume scales from 10 to 1,000 items: The Naive approach scales linearly past 2GB and hits an OutOfMemoryError crash. Meanwhile, the Flyweight pattern stays virtually flat at approximately 5 to 6 MB because the 5MB payload is instantiated only once.",
       
-      // Slide 8
-      "In conclusion, we solved both memory bloat using the Flyweight pattern and tight coupling using the Factory Method pattern. The code is modular, testable, and satisfies the SOLID design principles. Thank you, Professor. I am now open to any questions."
+      // Slide 8: Real Telemetry
+      "These are our actual empirical measurements taken directly from our running Spring Boot server. In the Naive endpoint, 20 boxes consumed 120 Megabytes, and 1,000 boxes triggered an OutOfMemoryError. In the Optimized endpoint, 1,000 boxes consumed only 6.14 Megabytes—a 99.8% reduction in heap memory.",
+      
+      // Slide 9: Codebase Guide
+      "Now, let me walk you through the actual codebase. First, in NaiveInventoryItem line 35, you can see the new byte[5MB] allocation on every instance, and in NaiveShipmentProcessor line 49, the rigid switch statement. When we run this in Postman with count=1000, it returns HTTP 507 OutOfMemoryError. Next, in our optimized package, ProductCatalog uses computeIfAbsent to guarantee a singleton per SKU, and ShipmentReceiver delegates item creation polymorphically. When we execute this in Postman, 1,000 items succeed in 400 milliseconds, taking only 6.14 MB.",
+      
+      // Slide 10: Conclusion
+      "In conclusion, Flyweight solves memory bloat by sharing intrinsic state, and Factory Method solves tight coupling by deferring instantiation to subclasses while respecting the Open/Closed Principle. Thank you, Professor. The application is running live on port 8081 for any tests."
     ];
 
     function showSlide(index) {
@@ -548,7 +640,7 @@
         text.textContent = 'Hide Speaker Script';
       } else {
         drawer.classList.add('hidden');
-        text.textContent = 'Show Speaker Script';
+        text.textContent = 'Show Speaker Script (What to Say)';
       }
     }
 
