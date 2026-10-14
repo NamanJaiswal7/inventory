@@ -1,0 +1,235 @@
+{
+  "info": {
+    "_postman_id": "c1f7b8e2-8921-4d3e-953b-e3a1f4b23456",
+    "name": "Warehouse Inventory API (Flyweight & Factory Method)",
+    "description": "Postman test collection for testing the Naive vs. Optimized E-Commerce Warehouse Inventory implementations demonstrating Flyweight and Factory Method design patterns.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Optimized - Receive 1,000 Electronics (Flyweight + Factory)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/optimized/receive?type=electronics&count=1000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "optimized",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "electronics",
+              "description": "Product category: electronics | books | clothing"
+            },
+            {
+              "key": "count",
+              "value": "1000",
+              "description": "Number of physical boxes arriving"
+            }
+          ]
+        },
+        "description": "Demonstrates the Flyweight Pattern: 1,000 physical items share a single 5MB ProductCatalogItem in heap memory. Retained memory is only ~6.14 MB."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Optimized - Receive 500 Books (Factory Method)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/optimized/receive?type=books&count=500",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "optimized",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "books"
+            },
+            {
+              "key": "count",
+              "value": "500"
+            }
+          ]
+        },
+        "description": "Demonstrates Factory Method polymorphic dispatch: delegates to BooksReceiver without switch statements."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Optimized - Receive 250 Clothing (Factory Method)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/optimized/receive?type=clothing&count=250",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "optimized",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "clothing"
+            },
+            {
+              "key": "count",
+              "value": "250"
+            }
+          ]
+        },
+        "description": "Demonstrates Factory Method polymorphic dispatch: delegates to ClothingReceiver."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Optimized - Unsupported Category (400 Bad Request)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/optimized/receive?type=furniture&count=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "optimized",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "furniture"
+            },
+            {
+              "key": "count",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Tests centralized GlobalExceptionHandler: returns 400 Bad Request with supported types."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Naive - Receive 20 Electronics (Memory Bloat)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/naive/receive?type=electronics&count=20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "naive",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "electronics"
+            },
+            {
+              "key": "count",
+              "value": "20"
+            }
+          ]
+        },
+        "description": "Demonstrates memory problem: 20 boxes allocate 20 separate 5MB byte buffers (~120 MB RAM)."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Naive - Receive 1,000 Electronics (OutOfMemory Demonstration)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/naive/receive?type=electronics&count=1000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "naive",
+            "receive"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "electronics"
+            },
+            {
+              "key": "count",
+              "value": "1000"
+            }
+          ]
+        },
+        "description": "Demonstrates heap exhaustion: attempting to allocate 5GB causes OutOfMemoryError, gracefully caught with telemetry."
+      },
+      "response": []
+    }
+  ]
+}

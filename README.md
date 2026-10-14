@@ -248,14 +248,172 @@ curl -X POST "http://localhost:8081/api/v1/naive/receive?type=electronics&count=
 
 ---
 
-## 5. PlantUML Diagrams
+## 5. UML Diagrams & Architecture Visualizations
 
-Pre-generated UML diagrams are stored in the [`diagrams/`](diagrams/) directory:
-1. [`diagrams/flyweight-pattern.puml`](diagrams/flyweight-pattern.puml) ([PNG view](diagrams/FlyweightPattern.png)): Detailed class diagram of the Flyweight pattern.
-2. [`diagrams/factory-method-pattern.puml`](diagrams/factory-method-pattern.puml) ([PNG view](diagrams/FactoryMethodPattern.png)): Detailed class diagram of the Factory Method pattern.
-3. [`diagrams/system-architecture.puml`](diagrams/system-architecture.puml) ([PNG view](diagrams/SystemArchitecture.png)): System architecture component diagram comparing Naive vs Optimized flows.
+The project includes pre-compiled, high-resolution UML diagrams located in the [`diagrams/`](diagrams/) directory.
 
-To regenerate diagrams in any environment with PlantUML installed:
+---
+
+### A. System Architecture & Comparison (Naive vs. Optimized)
+
+This diagram contrasts the Naive Anti-Pattern (tight coupling & duplicated 5MB allocations per item) with the Optimized Solution (Flyweight + Factory Method + Strategy Dispatcher).
+
+![System Architecture UML Diagram](diagrams/SystemArchitecture.png)
+
+#### Mermaid Architecture Flow:
+```mermaid
+graph TD
+    subgraph ClientLayer ["Client HTTP Layer"]
+        ReqOpt["POST /api/v1/optimized/receive?type=electronics&count=1000"]
+        ReqNaive["POST /api/v1/naive/receive?type=electronics&count=1000"]
+    end
+
+    subgraph NaivePackage ["com.warehouse.naive (Anti-Pattern)"]
+        NaiveCtrl["NaiveController"]
+        NaiveProc["NaiveShipmentProcessor<br/>(Monolithic switch statement)"]
+        NaiveItem["1,000 x NaiveInventoryItem<br/>(1,000 separate 5MB buffers = 5 GB RAM!)"]
+        
+        ReqNaive --> NaiveCtrl
+        NaiveCtrl --> NaiveProc
+        NaiveProc -->|switch case| NaiveItem
+        NaiveItem -->|Exhausts 2GB Heap| OOM["💥 OutOfMemoryError"]
+    end
+
+    subgraph OptimizedPackage ["com.warehouse.optimized (Flyweight + Factory Method)"]
+        OptCtrl["OptimizedController"]
+        Registry["ShipmentReceiverRegistry<br/>(Auto-wires receivers, 0 switch statements)"]
+        
+        subgraph FactoryMethod ["Factory Method Pattern (Creators)"]
+            CreatorBase["ShipmentReceiver<br/>(Template Method: processShipment)"]
+            ElecRec["ElectronicsReceiver<br/>(createInventoryItem)"]
+            BooksRec["BooksReceiver<br/>(createInventoryItem)"]
+            ClothRec["ClothingReceiver<br/>(createInventoryItem)"]
+            
+            CreatorBase <|-- ElecRec
+            CreatorBase <|-- BooksRec
+            CreatorBase <|-- ClothRec
+        end
+
+        subgraph FlyweightSubsystem ["Flyweight Pattern (Shared Memory)"]
+            FlyweightFactory["ProductCatalog<br/>(ConcurrentHashMap registry)"]
+            SharedFlyweight["ProductCatalogItem<br/>(Heavy 5MB image allocated ONCE per SKU)"]
+            OptContext["1,000 x OptimizedInventoryItem<br/>(~40 bytes each: barcode + shelf + ref)"]
+            
+            FlyweightFactory o-->|caches singleton| SharedFlyweight
+            OptContext -->|holds 64-bit reference| SharedFlyweight
+        end
+
+        ReqOpt --> OptCtrl
+        OptCtrl --> Registry
+        Registry --> CreatorBase
+        ElecRec --> FlyweightFactory
+        ElecRec ..> OptContext
+    end
+```
+
+---
+
+### B. Flyweight Pattern Class Diagram
+
+Separates heavy immutable intrinsic state (`ProductCatalogItem`) from lightweight unique extrinsic state (`OptimizedInventoryItem`), coordinated by `ProductCatalog`.
+
+![Flyweight Pattern Class Diagram](diagrams/FlyweightPattern.png)
+
+#### Mermaid Class Diagram:
+```mermaid
+classDiagram
+    class ProductCatalog {
+        -ConcurrentMap~String, ProductCatalogItem~ catalogRegistry
+        +getOrCreateProduct(sku, name) ProductCatalogItem
+        +containsSku(sku) boolean
+        +getCatalogSize() int
+        +clear() void
+    }
+
+    class ProductCatalogItem {
+        -String sku
+        -String name
+        -byte[] heavyImageData
+        +getSku() String
+        +getName() String
+        +getHeavyImageData() byte[]
+    }
+    note for ProductCatalogItem "INTRINSIC STATE (Immutable)\n5MB buffer allocated ONCE per SKU"
+
+    class OptimizedInventoryItem {
+        -String barcode
+        -String location
+        -ProductCatalogItem productCatalogItem
+        +getBarcode() String
+        +getLocation() String
+        +getProductCatalogItem() ProductCatalogItem
+        +getSku() String
+        +getName() String
+    }
+    note for OptimizedInventoryItem "EXTRINSIC STATE (~40 bytes)\nUnique barcode/shelf + 8-byte pointer"
+
+    ProductCatalog o--> "0..*" ProductCatalogItem : manages & caches
+    OptimizedInventoryItem --> "1" ProductCatalogItem : references shared flyweight
+```
+
+---
+
+### C. Factory Method Pattern Class Diagram
+
+Decouples shipment processing workflow from concrete item instantiation, adhering to the Open/Closed Principle.
+
+![Factory Method Pattern Class Diagram](diagrams/FactoryMethodPattern.png)
+
+#### Mermaid Class Diagram:
+```mermaid
+classDiagram
+    class ShipmentReceiver {
+        <<abstract>>
+        #createInventoryItem(barcode, location)* OptimizedInventoryItem
+        +getType()* String
+        +processShipment(count) List~OptimizedInventoryItem~
+    }
+
+    class ElectronicsReceiver {
+        -ProductCatalog productCatalog
+        +getType() String
+        #createInventoryItem(barcode, location) OptimizedInventoryItem
+    }
+
+    class BooksReceiver {
+        -ProductCatalog productCatalog
+        +getType() String
+        #createInventoryItem(barcode, location) OptimizedInventoryItem
+    }
+
+    class ClothingReceiver {
+        -ProductCatalog productCatalog
+        +getType() String
+        #createInventoryItem(barcode, location) OptimizedInventoryItem
+    }
+
+    class ShipmentReceiverRegistry {
+        -Map~String, ShipmentReceiver~ receiverMap
+        +getReceiver(type) ShipmentReceiver
+        +getSupportedTypes() Set~String~
+    }
+
+    ShipmentReceiver <|-- ElectronicsReceiver
+    ShipmentReceiver <|-- BooksReceiver
+    ShipmentReceiver <|-- ClothingReceiver
+    ShipmentReceiverRegistry o--> "1..*" ShipmentReceiver : dynamic discovery via Spring DI
+```
+
+---
+
+### D. Regenerating Diagram Files
+
+The PlantUML source files are stored in `diagrams/`:
+- [`diagrams/flyweight-pattern.puml`](diagrams/flyweight-pattern.puml)
+- [`diagrams/factory-method-pattern.puml`](diagrams/factory-method-pattern.puml)
+- [`diagrams/system-architecture.puml`](diagrams/system-architecture.puml)
+
+To recompile or export them to PNG/SVG at any time:
 ```bash
 plantuml diagrams/*.puml
 ```
